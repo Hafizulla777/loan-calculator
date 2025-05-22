@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LoanCalculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #002b5c;
+      color: white;
+      margin: 0;
+      padding: 1rem;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background-color: #ffffff;
+      color: #000000;
+      border-radius: 10px;
+      padding: 1.5rem;
+      box-sizing: border-box;
+    }
+    h1, h2, p {
+      text-align: center;
+    }
+    .section {
+      margin-bottom: 1.5rem;
+    }
+    input[type="range"], input[type="number"] {
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .slider-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .output {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #0073e6;
+      text-align: center;
+    }
+    .summary {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      font-weight: bold;
+      gap: 1rem;
+      text-align: center;
+    }
+    .final-result {
+      text-align: center;
+      margin-top: 2rem;
+      padding: 1rem;
+      background-color: #e6f0ff;
+      border-radius: 10px;
+      color: #002b5c;
+    }
+    @media (max-width: 600px) {
+      .summary {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>LoanCalculator</h1>
+    <p>Smartly plan your loan with LoanCalculator – Calculate personal loan EMI & eligibility instantly!</p>
+
+    <div class="section">
+      <p class="output">Your EMI is ₹<span id="emi">1834</span></p>
+      <div class="summary">
+        <div>Total Interest<br>₹<span id="interest">2004</span></div>
+        <div>Total Amount Payment<br>₹<span id="total">22004</span></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <label>Loan Amount (in rupee)</label>
+      <input type="number" id="loanAmount" value="20000" min="3000" max="500000" step="1000" />
+      <div class="slider-label"><span>3000</span><span>5L</span></div>
+      <input type="range" id="loanSlider" min="3000" max="500000" step="1000" value="20000" />
+    </div>
+
+    <div class="section">
+      <label>Interest Rate (%)</label>
+      <input type="number" id="rate" value="18" min="6" max="38" />
+      <div class="slider-label"><span>6</span><span>38</span></div>
+      <input type="range" id="rateSlider" min="6" max="38" step="0.1" value="18" />
+    </div>
+
+    <div class="section">
+      <label>Loan Term (in months)</label>
+      <input type="number" id="tenure" value="12" min="3" max="72" />
+      <div class="slider-label"><span>3</span><span>72</span></div>
+      <input type="range" id="tenureSlider" min="3" max="72" step="1" value="12" />
+    </div>
+
+    <div class="final-result">
+      Final Output: EMI ₹<span id="emiFinal">1834</span> | Interest ₹<span id="interestFinal">2004</span> | Total ₹<span id="totalFinal">22004</span>
+    </div>
+  </div>
+
+  <script>
+    const loanAmount = document.getElementById("loanAmount");
+    const loanSlider = document.getElementById("loanSlider");
+    const rate = document.getElementById("rate");
+    const rateSlider = document.getElementById("rateSlider");
+    const tenure = document.getElementById("tenure");
+    const tenureSlider = document.getElementById("tenureSlider");
+    const emiOutput = document.getElementById("emi");
+    const interestOutput = document.getElementById("interest");
+    const totalOutput = document.getElementById("total");
+    const emiFinal = document.getElementById("emiFinal");
+    const interestFinal = document.getElementById("interestFinal");
+    const totalFinal = document.getElementById("totalFinal");
+
+    function updateSliders() {
+      loanSlider.value = loanAmount.value;
+      rateSlider.value = rate.value;
+      tenureSlider.value = tenure.value;
+      calculateEMI();
+    }
+
+    function updateInputs() {
+      loanAmount.value = loanSlider.value;
+      rate.value = rateSlider.value;
+      tenure.value = tenureSlider.value;
+      calculateEMI();
+    }
+
+    function calculateEMI() {
+      const P = parseFloat(loanAmount.value);
+      const R = parseFloat(rate.value) / 12 / 100;
+      const N = parseFloat(tenure.value);
+
+      if (!P || !R || !N) return;
+
+      const emi = P * R * Math.pow(1 + R, N) / (Math.pow(1 + R, N) - 1);
+      const total = emi * N;
+      const interest = total - P;
+
+      emiOutput.innerText = Math.round(emi);
+      interestOutput.innerText = Math.round(interest);
+      totalOutput.innerText = Math.round(total);
+
+      emiFinal.innerText = Math.round(emi);
+      interestFinal.innerText = Math.round(interest);
+      totalFinal.innerText = Math.round(total);
+    }
+
+    loanAmount.addEventListener("input", updateSliders);
+    loanSlider.addEventListener("input", updateInputs);
+    rate.addEventListener("input", updateSliders);
+    rateSlider.addEventListener("input", updateInputs);
+    tenure.addEventListener("input", updateSliders);
+    tenureSlider.addEventListener("input", updateInputs);
+
+    calculateEMI();
+  </script>
+</body>
+</html>
